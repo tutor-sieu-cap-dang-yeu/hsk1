@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1: AI 小语，你好！ · New HSK 1 (3.0)</title>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<style>
+:root{
+  --forest:#013220;--moss:#006D6F;--teal:#007A74;
+  --mint:#D8BFD8;--sage:#F5F5DC;--sand:#FFFAF0;--shell:#FFF5EE;--white:#FFFAFA;
+  --blue:#2563EB;--blue-light:#EFF6FF;
+  --amber:#D97706;--amber-light:#FFFBEB;
+  --red:#DC2626;--red-light:#FEF2F2;--green-success:#16A34A;--green-light:#F0FDF4;
+  --text-dark:#013220;--text-mid:#006D6F;--text-soft:#5F8A80;
+  --border:#E3DED0;
+  --shadow-sm:0 1px 3px rgba(1,50,32,.08);--shadow-md:0 4px 16px rgba(1,50,32,.12);--shadow-lg:0 8px 32px rgba(1,50,32,.16);
+  --radius:12px;--radius-sm:8px;--radius-lg:20px;
+  --t1:#c0392b;--t2:#d19a00;--t3:#1f8a4c;--t4:#2657c9;--t5:#8a8f99;
+  font-size:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:var(--text-dark);line-height:1.6;background:var(--sand)}
+a{color:inherit;text-decoration:none}
+.app-shell{display:flex;min-height:100vh}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:260px;flex-shrink:0;background:var(--forest);color:var(--white);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;transition:transform .25s ease}
+.brand{padding:20px 20px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.level-badge{display:inline-block;background:rgba(216,191,216,.2);color:var(--mint);border:1px solid rgba(216,191,216,.3);font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 9px;border-radius:99px;text-transform:uppercase}
+.brand h1{font-size:15px;font-weight:800;margin-top:8px;color:#fff;line-height:1.3}
+.brand .sub{font-size:12px;color:var(--mint);opacity:.85;margin-top:2px}
+.nav{flex:1;overflow-y:auto;padding:10px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);cursor:pointer;border-left:3px solid transparent;transition:all .2s}
+.nav-item:hover{background:rgba(216,191,216,.08);color:#fff}
+.nav-item.active{background:rgba(216,191,216,.15);color:#fff;border-left-color:var(--mint);font-weight:700}
+.nav-num{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border-radius:6px;font-size:11px;font-weight:800}
+.nav-item.active .nav-num{background:var(--mint);color:var(--forest)}
+.nav-txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ===== MAIN ===== */
+.main{flex:1;margin-left:260px;min-width:0}
+.topbar{display:none;align-items:center;gap:12px;padding:12px 16px;background:var(--forest);color:#fff;position:sticky;top:0;z-index:90}
+.hamburger{font-size:22px;cursor:pointer;background:none;border:none;color:#fff;line-height:1}
+.topbar .tt{font-size:15px;font-weight:700}
+.hero{background:linear-gradient(135deg,var(--forest),var(--moss),var(--teal));color:#fff;padding:36px 48px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.hero .meta span{background:rgba(255,255,255,.15);color:#fff;font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px}
+.hero h2{font-size:28px;font-weight:800;line-height:1.25}
+.hero .zh{font-size:22px;font-weight:700;color:var(--mint);margin-top:6px}
+.hero .sub-h{font-size:14px;opacity:.9;margin-top:12px;max-width:620px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 48px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:80}
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--forest);color:#fff}
+.btn-primary:hover{background:var(--moss);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--forest);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--teal);background:var(--sage)}
+.btn-outline.on{border-color:var(--moss);background:var(--sage)}
+.spacer{flex:1}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:11px;color:var(--text-soft)}
+.legend .tone{display:inline-flex;align-items:center;gap:4px}
+.legend .dot{width:10px;height:10px;border-radius:50%}
+
+/* ===== COMPONENTS ===== */
+.badge-compose{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--moss);background:var(--sage);border:1px solid var(--border);padding:3px 9px;border-radius:99px;letter-spacing:.3px}
+.part-pill{display:inline-block;background:var(--forest);color:var(--mint);font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+.section{padding:36px 48px;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none;padding-bottom:80px}
+.section-header{margin-bottom:22px}
+.section-title{font-size:22px;font-weight:800;color:var(--forest);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section-desc{font-size:14px;color:var(--text-soft);margin-top:4px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+.card:hover{border-color:var(--teal);box-shadow:var(--shadow-md)}
+.tone1{color:var(--t1);font-weight:600}.tone2{color:var(--t2);font-weight:600}.tone3{color:var(--t3);font-weight:600}.tone4{color:var(--t4);font-weight:600}.tone5{color:var(--t5)}
+.icon-audio{background:var(--sage);border:none;color:var(--forest);width:32px;height:32px;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0}
+.icon-audio:hover{background:var(--mint);transform:scale(1.08)}
+
+/* Dialogue */
+.dialogue-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:22px}
+.dialogue-header{background:var(--shell);padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.dialogue-title{font-size:16px;font-weight:800;color:var(--forest)}
+.dialogue-scene{font-size:13px;color:var(--text-soft);font-style:italic}
+.dialogue-lines{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.d-line{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border-radius:var(--radius-sm);background:var(--sand);transition:all .2s}
+.d-line:hover{background:var(--shell)}
+.d-speaker{font-weight:800;color:var(--moss);font-size:14px;min-width:70px;flex-shrink:0;padding-top:2px}
+.d-content{flex:1}
+.d-zh{font-size:18px;font-weight:700;color:var(--forest);line-height:1.3}
+.d-py{font-size:13px;font-style:italic;margin-top:2px}
+.d-vi{font-size:13px;color:var(--text-mid);margin-top:2px}
+
+/* Vocab Table */
+.v-table{width:100%;border-collapse:collapse;font-size:14px;text-align:left}
+.v-table th{background:var(--forest);color:#fff;padding:10px 14px;font-weight:700;font-size:12px}
+.v-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--white)}
+.v-table tr:hover td{background:var(--shell)}
+.v-table .hz{font-size:18px;font-weight:700;color:var(--forest);cursor:pointer}
+.v-table .hz:hover{color:var(--teal)}
+
+/* Tip / Info boxes */
+.tip-box{background:var(--amber-light);border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#92400E;margin-top:12px}
+.info-box{background:var(--blue-light);border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#1E40AF;margin-top:12px}
+
+/* Tongue Twister */
+.twister-card{background:linear-gradient(to right,var(--white),var(--shell));border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px}
+.twister-zh{font-size:24px;font-weight:700;color:var(--forest);line-height:1.4}
+.twister-py{font-size:15px;font-style:italic;margin-top:4px}
+.twister-vi{font-size:14px;color:var(--text-mid);font-weight:600;margin-top:4px}
+.twister-breakdown{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.t-chip{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;text-align:center;font-size:12px}
+.t-chip .c-zh{font-size:18px;font-weight:700;color:var(--forest)}
+
+/* Hanzi Writer Grid */
+.writer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-top:14px}
+.stroke-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:all .2s}
+.stroke-card:hover{border-color:var(--teal);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.stroke-zh{font-size:26px;font-weight:700;color:var(--forest)}
+.stroke-py{font-size:14px;font-style:italic;font-weight:600}
+.stroke-vi{font-size:11px;color:var(--text-soft)}
+.writer-box{width:110px;height:110px;background:var(--shell);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.stroke-actions{display:flex;gap:4px;width:100%;margin-top:4px}
+.btn-stroke{flex:1;padding:5px 6px;font-size:11px;font-weight:700;border-radius:6px;border:1px solid var(--border);background:var(--sage);color:var(--forest);cursor:pointer;transition:all .15s}
+.btn-stroke:hover{background:var(--mint)}
+
+/* Grammar */
+.gcard{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
+.g-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.g-num{background:var(--forest);color:#fff;font-size:12px;font-weight:800;width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center}
+.g-title{font-size:17px;font-weight:800;color:var(--forest)}
+.g-structure{background:var(--forest);color:var(--mint);font-family:monospace,sans-serif;font-size:14px;padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px;font-weight:600}
+.g-exp{font-size:14px;color:var(--text-dark);margin-bottom:12px}
+.g-examples{background:var(--shell);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:12px}
+.g-ex{padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.g-ex:last-child{border-bottom:none}
+.g-drill{background:var(--green-light);border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:#14532D;margin-top:10px}
+
+/* Exercise widgets */
+.ex-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:22px}
+.ex-title{font-size:16px;font-weight:800;color:var(--forest);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.ex-prompt{font-size:13px;color:var(--text-soft);margin-bottom:14px}
+.chip-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.choice-chip{padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--white);font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--text-dark)}
+.choice-chip:hover{border-color:var(--teal);background:var(--sage)}
+.choice-chip.correct{border-color:var(--green-success);background:var(--green-light);color:var(--green-success)}
+.choice-chip.wrong{border-color:var(--red);background:var(--red-light);color:var(--red)}
+.fb{margin-top:12px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;display:none}
+.fb.ok{display:block;background:var(--green-light);color:var(--green-success);border:1px solid #BBF7D0}
+.fb.bad{display:block;background:var(--red-light);color:var(--red);border:1px solid #FECACA}
+.token-container{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.token-chip{padding:8px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;font-size:16px;font-weight:600;color:var(--forest);user-select:none;font-family:inherit}
+.token-chip:hover{border-color:var(--moss)}
+.token-chip.used{opacity:.3;pointer-events:none}
+.answer-zone{min-height:48px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--shell);margin-bottom:6px}
+.answer-slot{padding:6px 12px;background:var(--forest);color:#fff;border-radius:6px;font-size:15px;cursor:pointer}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-tile{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;text-align:center;font-size:14px;font-weight:600;transition:all .15s}
+.match-tile:hover{border-color:var(--teal)}
+.match-tile.pick{border-color:var(--forest);background:var(--sage)}
+.match-tile.done{border-color:var(--green-success);background:var(--green-light);pointer-events:none;opacity:.8}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(1,50,32,.4);z-index:99}
+
+@media(max-width:880px){
+  .sidebar{transform:translateX(-100%);width:80vw;max-width:280px}
+  .sidebar.open{transform:translateX(0)}
+  .backdrop.show{display:block}
+  .main{margin-left:0}
+  .topbar{display:flex}
+  .hero{padding:24px 20px}.hero h2{font-size:22px}
+  .toolbar{padding:12px 20px}
+  .section{padding:24px 20px}
+  .writer-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <span class="level-badge">新 HSK 1 (3.0)</span>
+    <h1>📘 BÀI 1: AI 小语，你好！</h1>
+    <div class="sub">Khóa học tiếng Trung · Người Việt mất gốc</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="goSec('sec-goals')"><span class="nav-num">1</span><span class="nav-txt">目标 · Mục tiêu</span></div>
+    <div class="nav-item" onclick="goSec('sec-warmup')"><span class="nav-num">2</span><span class="nav-txt">热身 · Khởi động (Líu lưỡi)</span></div>
+    <div class="nav-item" onclick="goSec('sec-texts')"><span class="nav-num">3</span><span class="nav-txt">课文 · Bài đọc & Hội thoại</span></div>
+    <div class="nav-item" onclick="goSec('sec-hanzi')"><span class="nav-num">4</span><span class="nav-txt">汉字 · Tập viết nét chữ Hán</span></div>
+    <div class="nav-item" onclick="goSec('sec-grammar')"><span class="nav-num">5</span><span class="nav-txt">小语讲堂 · Ngữ pháp</span></div>
+    <div class="nav-item" onclick="goSec('sec-exercises')"><span class="nav-num">6</span><span class="nav-txt">综合练习 · Bài tập 6 dạng</span></div>
+  </nav>
+</aside>
+<div class="backdrop" id="backdrop" onclick="toggleSB()"></div>
+
+<main class="main">
+  <div class="topbar"><button class="hamburger" onclick="toggleSB()">☰</button><span class="tt">Bài 1 · AI 小语，你好！</span></div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="meta"><span>新 HSK 1 · 3.0</span><span>Bài 1 / 15</span><span>12 từ vựng</span></div>
+    <h2>📘 BÀI 1: AI 小语，你好！</h2>
+    <div class="zh">Xin chào AI Tiểu Ngữ!</div>
+    <p class="sub-h">🎯 Sau bài này, bạn sẽ tự tin <b>chào hỏi, cảm ơn, tạm biệt</b> và phân biệt đại từ kính trọng <b>您 (nín)</b> trong giao tiếp tiếng Trung.</p>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn btn-outline" onclick="togglePy()">👁 Ẩn/Hiện Pinyin</button>
+    <div class="spacer"></div>
+    <div class="legend">
+      <span class="tone"><span class="dot" style="background:var(--t1)"></span>T1 ¯</span>
+      <span class="tone"><span class="dot" style="background:var(--t2)"></span>T2 ´</span>
+      <span class="tone"><span class="dot" style="background:var(--t3)"></span>T3 ˇ</span>
+      <span class="tone"><span class="dot" style="background:var(--t4)"></span>T4 `</span>
+      <span class="tone"><span class="dot" style="background:var(--t5)"></span>Nhẹ</span>
+    </div>
+  </div>
+
+  <!-- ===== PHẦN 1: MỤC TIÊU ===== -->
+  <section class="section" id="sec-goals">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 1 · 目标</span>
+      <h2 class="section-title">Mục tiêu bài học</h2>
+    </div>
+    <div class="card">
+      <ul style="padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px">
+        <li><b>Can-do:</b> Chào hỏi đúng đối tượng, cảm ơn, đáp lại lời cảm ơn, tạm biệt lịch sự.</li>
+        <li><b>Văn hóa:</b> Phân biệt và sử dụng đại từ xưng hô kính trọng <b>"您" (nín)</b> với người lớn tuổi, thầy cô.</li>
+        <li><b>Ngữ âm:</b> Biến điệu thanh 3 (3+3 → 2+3: <i>nǐ hǎo → ní hǎo</i>) và biến điệu "不" trước thanh 4 (<i>bù kèqi → bú kèqi</i>).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== PHẦN 2: KHỞI ĐỘNG (LÍU LƯỠI) ===== -->
+  <section class="section" id="sec-warmup">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 2 · 热身</span>
+      <h2 class="section-title">Luyện đọc câu líu lưỡi (绕口令) <span class="badge-compose">✍️ Biên soạn</span></h2>
+      <p class="section-desc">Rèn phát âm Pinyin và phân biệt 4 thanh điệu cùng phụ âm "m"</p>
+    </div>
+
+    <div class="twister-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="color:var(--moss);font-size:13px">CÂU 1</b>
+        <button class="icon-audio" onclick="playAudio('妈种麻我放马')">🔊</button>
+      </div>
+      <div class="twister-zh">妈种麻，我放马。</div>
+      <div class="twister-py py-row"><span class="tone1">Mā</span> <span class="tone4">zhòng</span> <span class="tone2">má</span>，<span class="tone3">wǒ</span> <span class="tone4">fàng</span> <span class="tone3">mǎ</span>。</div>
+      <div class="twister-vi">💡 Mẹ trồng gai, tôi chăn ngựa.</div>
+      <div class="twister-breakdown">
+        <div class="t-chip"><div class="c-zh">妈</div><div class="tone1" style="font-weight:700">mā T1</div><div style="color:var(--text-soft)">mẹ</div></div>
+        <div class="t-chip"><div class="c-zh">麻</div><div class="tone2" style="font-weight:700">má T2</div><div style="color:var(--text-soft)">gai</div></div>
+        <div class="t-chip"><div class="c-zh">马</div><div class="tone3" style="font-weight:700">mǎ T3</div><div style="color:var(--text-soft)">ngựa</div></div>
+        <div class="t-chip"><div class="c-zh">骂</div><div class="tone4" style="font-weight:700">mà T4</div><div style="color:var(--text-soft)">mắng</div></div>
+      </div>
+    </div>
+
+    <div class="twister-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="color:var(--moss);font-size:13px">CÂU 2</b>
+        <button class="icon-audio" onclick="playAudio('马吃麻妈妈骂马')">🔊</button>
+      </div>
+      <div class="twister-zh">马吃麻，妈妈骂马。</div>
+      <div class="twister-py py-row"><span class="tone3">Mǎ</span> <span class="tone1">chī</span> <span class="tone2">má</span>，<span class="tone1">mā</span><span class="tone5">ma</span> <span class="tone4">mà</span> <span class="tone3">mǎ</span>。</div>
+      <div class="twister-vi">💡 Ngựa ăn gai, mẹ mắng ngựa.</div>
+    </div>
+  </section>
+
+  <!-- ===== PHẦN 3: BÀI ĐỌC & HỘI THOẠI (3 TEXTS) ===== -->
+  <section class="section" id="sec-texts">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 3 · 课文</span>
+      <h2 class="section-title">Bài đọc & Hội thoại (3 Texts) <span class="badge-compose">✍️ Biên soạn</span></h2>
+      <p class="section-desc">3 tình huống giao tiếp ngày đầu khai trường</p>
+    </div>
+
+    <!-- TEXT 1 -->
+    <div class="dialogue-box">
+      <div class="dialogue-header">
+        <div class="dialogue-title">➡️ Bài đọc 1: Chào hỏi tại văn phòng</div>
+        <div class="dialogue-scene">Thầy Vương Nhất Phi chào trợ lý AI Tiểu Ngữ.</div>
+      </div>
+      <div class="dialogue-lines">
+        <div class="d-line">
+          <div class="d-speaker">王一飞</div>
+          <div class="d-content">
+            <div class="d-zh">AI 小语，你好！</div>
+            <div class="d-py py-row">AI <span class="tone3">Xiǎo</span><span class="tone3">yǔ</span>，<span class="tone3">nǐ</span> <span class="tone3">hǎo</span>！</div>
+            <div class="d-vi">AI Tiểu Ngữ, chào em!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('小语你好')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">小语</div>
+          <div class="d-content">
+            <div class="d-zh">王老师，你好！</div>
+            <div class="d-py py-row"><span class="tone2">Wáng</span> <span class="tone3">lǎo</span><span class="tone1">shī</span>，<span class="tone3">nǐ</span> <span class="tone3">hǎo</span>！</div>
+            <div class="d-vi">Thầy Vương, chào thầy!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('王老师你好')">🔊</button>
+        </div>
+      </div>
+      <div style="padding:0 20px 14px">
+        <b style="font-size:13px;color:var(--forest)">📖 Từ mới — Bài đọc 1:</b>
+        <div style="margin-top:6px;font-size:14px">① <b class="tone3">你好</b> (nǐ hǎo) [thán từ]: Xin chào &nbsp;·&nbsp; <b>王老师</b> (Wáng lǎoshī) [danh từ riêng]: Thầy/Cô Vương</div>
+        <div class="info-box"><b>👥 Phân vai:</b> Đóng vai thầy Vương & Tiểu Ngữ, luyện chào hỏi to, rõ.</div>
+      </div>
+    </div>
+
+    <!-- TEXT 2 -->
+    <div class="dialogue-box">
+      <div class="dialogue-header">
+        <div class="dialogue-title">➡️ Bài đọc 2: Chào hỏi trên lớp học</div>
+        <div class="dialogue-scene">Học sinh học các câu chào hỏi đa dạng.</div>
+      </div>
+      <div class="dialogue-lines">
+        <div class="d-line">
+          <div class="d-speaker">王一飞</div>
+          <div class="d-content">
+            <div class="d-zh">大家好！</div>
+            <div class="d-py py-row"><span class="tone4">Dà</span><span class="tone1">jiā</span> <span class="tone3">hǎo</span>！</div>
+            <div class="d-vi">Chào mọi người!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('大家好')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">学生们</div>
+          <div class="d-content">
+            <div class="d-zh">老师，您好！</div>
+            <div class="d-py py-row"><span class="tone3">Lǎo</span><span class="tone1">shī</span>，<span class="tone2">nín</span> <span class="tone3">hǎo</span>！</div>
+            <div class="d-vi">Chúng em chào thầy!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('老师您好')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">小语</div>
+          <div class="d-content">
+            <div class="d-zh">你们好！</div>
+            <div class="d-py py-row"><span class="tone3">Nǐ</span><span class="tone5">men</span> <span class="tone3">hǎo</span>！</div>
+            <div class="d-vi">Chào các bạn!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('你们好')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">学生们</div>
+          <div class="d-content">
+            <div class="d-zh">你好，小语！</div>
+            <div class="d-py py-row"><span class="tone3">Nǐ</span> <span class="tone3">hǎo</span>，<span class="tone3">Xiǎo</span><span class="tone3">yǔ</span>！</div>
+            <div class="d-vi">Chào Tiểu Ngữ!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('你好小语')">🔊</button>
+        </div>
+      </div>
+      <div style="padding:0 20px 14px">
+        <div class="tip-box"><b>💡 Góc Tiểu Ngữ:</b> "您" (Nín) là đại từ xưng hô kính trọng, dùng cho thầy cô, người lớn tuổi, đối tác.</div>
+        <div style="margin-top:10px;font-size:14px">
+          <b style="color:var(--forest)">📖 Từ mới — Bài đọc 2:</b><br>
+          ② <b>大家</b> (dàjiā) [đại từ]: Mọi người · ③ <b>好</b> (hǎo) [tính từ]: Tốt, khỏe · ④ <b>学生</b> (xuésheng) [danh từ]: Học sinh · ⑤ <b>们</b> (men) [hậu tố]: Số nhiều · ⑥ <b>老师</b> (lǎoshī) [danh từ]: Thầy/Cô giáo · ⑦ <b>您</b> (nín) [đại từ]: Ngài (kính trọng) · ⑧ <b>你们</b> (nǐmen) [đại từ]: Các bạn
+        </div>
+        <div class="info-box"><b>👥 Luyện tập:</b> Ghép cặp/nhóm, dùng tên thật thực hành chào hỏi.</div>
+      </div>
+    </div>
+
+    <!-- TEXT 3 -->
+    <div class="dialogue-box">
+      <div class="dialogue-header">
+        <div class="dialogue-title">➡️ Bài đọc 3: Cảm ơn & Tạm biệt</div>
+        <div class="dialogue-scene">Học sinh học cách cảm ơn và tạm biệt cuối buổi.</div>
+      </div>
+      <div class="dialogue-lines">
+        <div class="d-line">
+          <div class="d-speaker">学生们</div>
+          <div class="d-content">
+            <div class="d-zh">谢谢！</div>
+            <div class="d-py py-row"><span class="tone4">Xiè</span><span class="tone5">xie</span>！</div>
+            <div class="d-vi">Cảm ơn!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('谢谢')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">小语</div>
+          <div class="d-content">
+            <div class="d-zh">不客气！</div>
+            <div class="d-py py-row"><span class="tone2">Bú</span> <span class="tone4">kè</span><span class="tone5">qi</span>！</div>
+            <div class="d-vi">Không có gì!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('不客气')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">王一飞</div>
+          <div class="d-content">
+            <div class="d-zh">同学们，再见！</div>
+            <div class="d-py py-row"><span class="tone2">Tóng</span><span class="tone2">xué</span><span class="tone5">men</span>，<span class="tone4">zài</span><span class="tone4">jiàn</span>！</div>
+            <div class="d-vi">Tạm biệt các em!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('同学们再见')">🔊</button>
+        </div>
+        <div class="d-line">
+          <div class="d-speaker">学生们</div>
+          <div class="d-content">
+            <div class="d-zh">老师，再见！</div>
+            <div class="d-py py-row"><span class="tone3">Lǎo</span><span class="tone1">shī</span>，<span class="tone4">zài</span><span class="tone4">jiàn</span>！</div>
+            <div class="d-vi">Chúng em chào thầy!</div>
+          </div>
+          <button class="icon-audio" onclick="playAudio('老师再见')">🔊</button>
+        </div>
+      </div>
+      <div style="padding:0 20px 14px">
+        <div style="font-size:14px">
+          <b style="color:var(--forest)">📖 Từ mới — Bài đọc 3:</b><br>
+          ⑨ <b>谢谢</b> (xièxie) [động từ]: Cảm ơn · ⑩ <b>不客气</b> (bú kèqi) [cụm từ]: Không có gì · ⑪ <b>同学</b> (tóngxué) [danh từ]: Bạn học · ⑫ <b>再见</b> (zàijiàn) [động từ]: Tạm biệt
+        </div>
+      </div>
+    </div>
+
+    <!-- BẢNG TỪ VỰNG TỔNG HỢP -->
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:800;color:var(--forest);margin-bottom:10px">📖 Bảng từ vựng trọng tâm Bài 1 (Trích nguồn New HSK 1 3.0)</h3>
+      <div style="overflow-x:auto">
+        <table class="v-table">
+          <thead><tr><th>STT</th><th>Hán tự</th><th>Pinyin</th><th>Loại từ</th><th>Nghĩa tiếng Việt</th><th>🔊</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="hz" onclick="playAudio('你好')">你好</td><td class="py-row"><span class="tone3">nǐ</span> <span class="tone3">hǎo</span></td><td>Thán từ</td><td>Xin chào</td><td><button class="icon-audio" onclick="playAudio('你好')">🔊</button></td></tr>
+            <tr><td>-</td><td class="hz" onclick="playAudio('王老师')">王老师</td><td class="py-row"><span class="tone2">Wáng</span> <span class="tone3">lǎo</span><span class="tone1">shī</span></td><td>Danh từ riêng</td><td>Thầy/Cô Vương</td><td><button class="icon-audio" onclick="playAudio('王老师')">🔊</button></td></tr>
+            <tr><td>2</td><td class="hz" onclick="playAudio('大家')">大家</td><td class="py-row"><span class="tone4">dà</span><span class="tone1">jiā</span></td><td>Đại từ</td><td>Mọi người</td><td><button class="icon-audio" onclick="playAudio('大家')">🔊</button></td></tr>
+            <tr><td>3</td><td class="hz" onclick="playAudio('好')">好</td><td class="py-row"><span class="tone3">hǎo</span></td><td>Tính từ</td><td>Tốt, khỏe</td><td><button class="icon-audio" onclick="playAudio('好')">🔊</button></td></tr>
+            <tr><td>4</td><td class="hz" onclick="playAudio('学生')">学生</td><td class="py-row"><span class="tone2">xué</span><span class="tone5">sheng</span></td><td>Danh từ</td><td>Học sinh, sinh viên</td><td><button class="icon-audio" onclick="playAudio('学生')">🔊</button></td></tr>
+            <tr><td>5</td><td class="hz" onclick="playAudio('们')">们</td><td class="py-row"><span class="tone5">men</span></td><td>Hậu tố</td><td>Tạo số nhiều cho đại từ/danh từ chỉ người</td><td><button class="icon-audio" onclick="playAudio('们')">🔊</button></td></tr>
+            <tr><td>6</td><td class="hz" onclick="playAudio('老师')">老师</td><td class="py-row"><span class="tone3">lǎo</span><span class="tone1">shī</span></td><td>Danh từ</td><td>Thầy/Cô giáo</td><td><button class="icon-audio" onclick="playAudio('老师')">🔊</button></td></tr>
+            <tr><td>7</td><td class="hz" onclick="playAudio('您')">您</td><td class="py-row"><span class="tone2">nín</span></td><td>Đại từ</td><td>Ngài, Thầy/Cô (kính trọng)</td><td><button class="icon-audio" onclick="playAudio('您')">🔊</button></td></tr>
+            <tr><td>8</td><td class="hz" onclick="playAudio('你们')">你们</td><td class="py-row"><span class="tone3">nǐ</span><span class="tone5">men</span></td><td>Đại từ</td><td>Các bạn</td><td><button class="icon-audio" onclick="playAudio('你们')">🔊</button></td></tr>
+            <tr><td>9</td><td class="hz" onclick="playAudio('谢谢')">谢谢</td><td class="py-row"><span class="tone4">xiè</span><span class="tone5">xie</span></td><td>Động từ</td><td>Cảm ơn</td><td><button class="icon-audio" onclick="playAudio('谢谢')">🔊</button></td></tr>
+            <tr><td>10</td><td class="hz" onclick="playAudio('不客气')">不客气</td><td class="py-row"><span class="tone2">bú</span> <span class="tone4">kè</span><span class="tone5">qi</span></td><td>Cụm từ</td><td>Không có gì, đừng khách sáo</td><td><button class="icon-audio" onclick="playAudio('不客气')">🔊</button></td></tr>
+            <tr><td>11</td><td class="hz" onclick="playAudio('同学')">同学</td><td class="py-row"><span class="tone2">tóng</span><span class="tone2">xué</span></td><td>Danh từ</td><td>Bạn học</td><td><button class="icon-audio" onclick="playAudio('同学')">🔊</button></td></tr>
+            <tr><td>12</td><td class="hz" onclick="playAudio('再见')">再见</td><td class="py-row"><span class="tone4">zài</span><span class="tone4">jiàn</span></td><td>Động từ</td><td>Tạm biệt, hẹn gặp lại</td><td><button class="icon-audio" onclick="playAudio('再见')">🔊</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PHẦN 4: TẬP VIẾT NÉT CHỮ HÁN ===== -->
+  <section class="section" id="sec-hanzi">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 4 · 汉字</span>
+      <h2 class="section-title">Tập viết nét chữ Hán (Hanzi Writer)</h2>
+      <p class="section-desc">Bấm <b>▶ Xem</b> để xem thuận bút, <b>✍ Viết</b> để tự tay viết nét</p>
+    </div>
+    <div class="writer-grid" id="writerGrid"></div>
+  </section>
+
+  <!-- ===== PHẦN 5: NGỮ PHÁP ===== -->
+  <section class="section" id="sec-grammar">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 5 · 小语讲堂</span>
+      <h2 class="section-title">Tiểu Ngữ Giảng Đường · Ngữ pháp</h2>
+      <p class="section-desc">Dạy cách ghép câu — không dạy học thuộc</p>
+    </div>
+
+    <div class="gcard">
+      <div class="g-head"><span class="g-num">1</span><span class="g-title">Cách chào hỏi cơ bản</span></div>
+      <div class="g-structure">[Đối tượng] + 好！</div>
+      <p class="g-exp">Đặt tên/chức danh trước "好" để chào. Với 1 người: 你好; với số đông: 大家好 / 你们好; trang trọng: 您好.</p>
+      <div class="g-examples">
+        <div class="g-ex"><div><b style="color:var(--forest)">你好！</b><div class="py-row" style="font-size:13px"><span class="tone3">Nǐ</span> <span class="tone3">hǎo</span>! — Chào bạn!</div></div><button class="icon-audio" onclick="playAudio('你好')">🔊</button></div>
+        <div class="g-ex"><div><b style="color:var(--forest)">老师，您好！</b><div class="py-row" style="font-size:13px"><span class="tone3">Lǎo</span><span class="tone1">shī</span>, <span class="tone2">nín</span> <span class="tone3">hǎo</span>! — Em chào thầy/cô!</div></div><button class="icon-audio" onclick="playAudio('老师您好')">🔊</button></div>
+        <div class="g-ex"><div><b style="color:var(--forest)">大家好！</b><div class="py-row" style="font-size:13px"><span class="tone4">Dà</span><span class="tone1">jiā</span> <span class="tone3">hǎo</span>! — Chào mọi người!</div></div><button class="icon-audio" onclick="playAudio('大家好')">🔊</button></div>
+      </div>
+      <div class="g-drill"><b>🗣️ Speaking Drill <span class="badge-compose">✍️</span>:</b> 你好 → 老师好 → 王老师好 → 大家好 → 你们好 → 老师，您好！</div>
+    </div>
+
+    <div class="gcard">
+      <div class="g-head"><span class="g-num">2</span><span class="g-title">Cảm ơn & Đáp lại</span></div>
+      <div class="g-structure">谢谢！ ↔ 不客气！</div>
+      <p class="g-exp">Ai đó giúp bạn → nói "谢谢" (cảm ơn). Đáp lại: "不客气" (không có gì, đừng khách sáo).</p>
+      <div class="tip-box"><b>⚠️ Biến điệu "不":</b> 不 (bù, T4) trước âm tiết thanh 4 → đọc thành T2: <i>bù + kèqi → <b>bú</b> kèqi</i>.</div>
+    </div>
+
+    <div class="gcard">
+      <div class="g-head"><span class="g-num">3</span><span class="g-title">Hậu tố số nhiều "们"</span></div>
+      <div class="g-structure">[Đại từ / Danh từ chỉ người] + 们</div>
+      <p class="g-exp">Thêm "们" để tạo số nhiều: 你→你们, 学生→学生们, 同学→同学们, 老师→老师们.</p>
+      <div class="g-examples">
+        <div class="g-ex"><div><b style="color:var(--forest)">你 → 你们</b> (bạn → các bạn)</div></div>
+        <div class="g-ex"><div><b style="color:var(--forest)">同学 → 同学们</b> (bạn học → các bạn học)</div></div>
+      </div>
+      <div class="tip-box"><b>❌ Lỗi hay mắc:</b> Đã có số đếm → KHÔNG thêm "们": ✗ 三个学生们 → ✓ 三个学生.</div>
+    </div>
+
+    <div class="gcard">
+      <div class="g-head"><span class="g-num">4</span><span class="g-title">Biến điệu Thanh 3 (3+3 → 2+3)</span></div>
+      <div class="g-structure">Thanh 3 + Thanh 3 → đọc thành Thanh 2 + Thanh 3</div>
+      <p class="g-exp">Khi hai âm T3 liền kề, âm đầu biến thành T2. Pinyin viết vẫn giữ dấu T3 gốc.</p>
+      <div class="g-examples">
+        <div class="g-ex"><div><b style="color:var(--forest)">你好</b> nǐ hǎo → đọc: <span class="tone2" style="font-weight:800">ní</span> <span class="tone3" style="font-weight:800">hǎo</span></div><button class="icon-audio" onclick="playAudio('你好')">🔊</button></div>
+        <div class="g-ex"><div><b style="color:var(--forest)">小语</b> xiǎo yǔ → đọc: <span class="tone2" style="font-weight:800">xiáo</span> <span class="tone3" style="font-weight:800">yǔ</span></div><button class="icon-audio" onclick="playAudio('小语')">🔊</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PHẦN 6: BÀI TẬP TỔNG HỢP (6 DẠNG) ===== -->
+  <section class="section" id="sec-exercises">
+    <div class="section-header">
+      <span class="part-pill">PHẦN 6 · 综合练习</span>
+      <h2 class="section-title">Bài tập tổng hợp (6 Dạng) <span class="badge-compose">✍️ Biên soạn</span></h2>
+      <p class="section-desc">Mỗi dạng có đáp án & giải thích chi tiết</p>
+    </div>
+
+    <!-- DẠNG 1 -->
+    <div class="ex-card">
+      <div class="ex-title">1. 找不同类词 · Chọn từ khác loại</div>
+      <div class="ex-prompt">Trong 4 từ sau, từ nào KHÔNG phải danh từ chỉ người?</div>
+      <div class="chip-group" id="e1c"></div>
+      <div class="fb" id="e1f"></div>
+    </div>
+
+    <!-- DẠNG 2 -->
+    <div class="ex-card">
+      <div class="ex-title">2. 判断逻辑正误 · Đúng / Sai</div>
+      <div class="ex-prompt">Tình huống: Bạn nói "谢谢！", đối phương đáp "再见！". Phản hồi này có đúng không?</div>
+      <div class="chip-group" id="e2c"></div>
+      <div class="fb" id="e2f"></div>
+    </div>
+
+    <!-- DẠNG 3 -->
+    <div class="ex-card">
+      <div class="ex-title">3. 选词填空 · Điền từ vào chỗ trống</div>
+      <div class="ex-prompt">王老师，________ 好！ <span style="color:var(--text-soft)">(Chào thầy Vương — xưng hô trang trọng)</span></div>
+      <div class="chip-group" id="e3c"></div>
+      <div class="fb" id="e3f"></div>
+    </div>
+
+    <!-- DẠNG 4 -->
+    <div class="ex-card">
+      <div class="ex-title">4. 连词成句 · Sắp xếp thành câu</div>
+      <div class="ex-prompt">Nghĩa tiếng Việt: <b>"Tạm biệt các bạn học!"</b> — Bấm thẻ pinyin theo thứ tự đúng:</div>
+      <div class="answer-zone" id="e4z"></div>
+      <div class="token-container" id="e4t"></div>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn btn-primary" onclick="checkE4()">Kiểm tra</button>
+        <button class="btn btn-outline" onclick="resetE4()">Làm lại</button>
+      </div>
+      <div class="fb" id="e4f"></div>
+    </div>
+
+    <!-- DẠNG 5 -->
+    <div class="ex-card">
+      <div class="ex-title">5. 看文本回答问题 · Đọc đoạn ngắn trả lời</div>
+      <div class="ex-prompt" style="display:none"></div>
+      <div style="background:var(--shell);padding:14px;border-radius:var(--radius-sm);font-size:14px;line-height:1.7;margin-bottom:12px">
+        王一飞老师对大家说："大家好！"学生们说："老师，您好！"小语说："你们好！"下课了，学生们说："谢谢！"小语说："不客气！"<br>
+        <span style="font-size:12px;color:var(--text-soft);font-style:italic">(Thầy Vương nói: "Chào mọi người!" Học sinh: "Chào thầy!" Tiểu Ngữ: "Chào các bạn!" Tan học, học sinh: "Cảm ơn!" Tiểu Ngữ: "Không có gì!")</span>
+      </div>
+      <b style="color:var(--forest);font-size:14px">Câu hỏi: Khi học sinh nói "谢谢！", Tiểu Ngữ đáp lại gì?</b>
+      <div class="chip-group" id="e5c"></div>
+      <div class="fb" id="e5f"></div>
+    </div>
+
+    <!-- DẠNG 6 -->
+    <div class="ex-card">
+      <div class="ex-title">6. 完成对话 · Hoàn thành hội thoại</div>
+      <div class="ex-prompt">A: 谢谢你，小语！ — B: _______________</div>
+      <div class="chip-group" id="e6c"></div>
+      <div class="fb" id="e6f"></div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+/* ===== AUDIO ===== */
+const AB="https://static.xiehanzi.com/word_audios/";
+let zv=null;
+function pv(){if(window.speechSynthesis){const v=speechSynthesis.getVoices();zv=v.find(x=>/zh(-|_)?(CN)?/i.test(x.lang))||v.find(x=>/zh/i.test(x.lang))||null;}}
+if(window.speechSynthesis){pv();speechSynthesis.onvoiceschanged=pv;}
+function spk(t){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.85;if(zv)u.voice=zv;speechSynthesis.speak(u);}catch(e){}}
+function playAudio(t){
+  const c=t.replace(/[，。！？、\s]/g,'');
+  const a=new Audio(AB+encodeURIComponent(c)+".mp3");let d=false;
+  a.addEventListener('playing',()=>d=true);
+  a.addEventListener('error',()=>{if(!d)spk(c);});
+  const p=a.play();if(p&&p.catch)p.catch(()=>{if(!d)spk(c);});
+  setTimeout(()=>{if(!d)spk(c);},1200);
+}
+
+/* ===== SIDEBAR / NAV ===== */
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('backdrop').classList.toggle('show');}
+function goSec(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event?.target?.closest?.('.nav-item')?.classList?.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('show');
+}
+
+/* ===== PINYIN TOGGLE ===== */
+let pyOn=true;
+function togglePy(){pyOn=!pyOn;document.querySelectorAll('.py-row').forEach(e=>e.style.display=pyOn?'':'none');}
+
+/* ===== HANZI WRITER ===== */
+const WR={};
+function initW(id,ch){
+  if(WR[id])return WR[id];
+  const el=document.getElementById(id);if(!el)return null;el.innerHTML='';
+  WR[id]=HanziWriter.create(id,ch,{width:100,height:100,padding:5,showOutline:true,strokeAnimationSpeed:1,delayBetweenStrokes:200,strokeColor:'#013220',radicalColor:'#006D6F',outlineColor:'#E3DED0',drawingColor:'#007A74'});
+  return WR[id];
+}
+function wAct(id,ch,act){
+  const w=initW(id,ch);if(!w)return;
+  if(act==='a')w.animateCharacter();
+  else if(act==='q')w.quiz();
+  else{w.showOutline();w.hideCharacter();}
+}
+const HZ_CHARS=[
+  {ch:'你',py:'nǐ',vi:'bạn',t:3},{ch:'好',py:'hǎo',vi:'tốt, khỏe',t:3},
+  {ch:'您',py:'nín',vi:'ngài (kính trọng)',t:2},{ch:'们',py:'men',vi:'số nhiều',t:5},
+  {ch:'老',py:'lǎo',vi:'già, thầy',t:3},{ch:'师',py:'shī',vi:'thầy, giáo',t:1},
+  {ch:'学',py:'xué',vi:'học',t:2},{ch:'生',py:'shēng',vi:'sinh, sống',t:1},
+  {ch:'谢',py:'xiè',vi:'cảm ơn',t:4},{ch:'同',py:'tóng',vi:'cùng',t:2},
+  {ch:'再',py:'zài',vi:'lại, nữa',t:4},{ch:'见',py:'jiàn',vi:'gặp',t:4}
+];
+window.addEventListener('DOMContentLoaded',()=>{
+  const grid=document.getElementById('writerGrid');
+  HZ_CHARS.forEach((c,i)=>{
+    const wid='w'+i;
+    grid.innerHTML+=`<div class="stroke-card">
+      <div style="display:flex;align-items:baseline;gap:6px"><span class="stroke-zh">${c.ch}</span><span class="stroke-py tone${c.t}">${c.py}</span></div>
+      <div class="stroke-vi">${c.vi}</div>
+      <div class="writer-box" id="${wid}"></div>
+      <div class="stroke-actions">
+        <button class="btn-stroke" onclick="wAct('${wid}','${c.ch}','a')">▶ Xem</button>
+        <button class="btn-stroke" onclick="wAct('${wid}','${c.ch}','q')">✍ Viết</button>
+        <button class="btn-stroke" onclick="wAct('${wid}','${c.ch}','r')">🔄</button>
+      </div>
+    </div>`;
+  });
+  HZ_CHARS.forEach((c,i)=>initW('w'+i,c.ch));
+  buildExercises();
+});
+
+/* ===== EXERCISES ===== */
+function mkChips(id,opts,cb){
+  const g=document.getElementById(id);g.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='choice-chip';b.textContent=o.label;
+    b.onclick=()=>cb(b,o.ok,id.replace('c','f'),g);
+    g.appendChild(b);
+  });
+}
+function exFb(btn,ok,fbId,group,okMsg,badMsg){
+  group.querySelectorAll('.choice-chip').forEach(c=>c.style.pointerEvents='none');
+  const fb=document.getElementById(fbId);
+  if(ok){btn.classList.add('correct');fb.className='fb ok';fb.innerHTML='✓ '+okMsg;}
+  else{btn.classList.add('wrong');fb.className='fb bad';fb.innerHTML='✗ '+badMsg;
+    group.querySelectorAll('.choice-chip').forEach(c=>{if(!c.classList.contains('wrong')&&!c.classList.contains('correct')){/* find correct */}});
+  }
+}
+function buildExercises(){
+  // E1
+  mkChips('e1c',[
+    {label:'A. 老师 (lǎoshī)',ok:false},{label:'B. 学生 (xuésheng)',ok:false},
+    {label:'C. 同学 (tóngxué)',ok:false},{label:'D. 谢谢 (xièxie)',ok:true}
+  ],(b,ok,fid,g)=>exFb(b,ok,fid,g,
+    '谢谢 (xièxie) là động từ "cảm ơn" — không phải danh từ chỉ người.',
+    'Đáp án đúng: D. 谢谢 — là động từ, không phải danh từ chỉ người.'));
+  // E2
+  mkChips('e2c',[{label:'Đúng (对)',ok:false},{label:'Sai (错)',ok:true}],
+  (b,ok,fid,g)=>exFb(b,ok,fid,g,
+    'Đáp lại "谢谢" phải là "不客气！" (Không có gì), không phải "再见！" (Tạm biệt).',
+    'Đáp án: Sai! Đáp lại "谢谢" phải là "不客气！".'));
+  // E3
+  mkChips('e3c',[
+    {label:'A. 你们 (nǐmen)',ok:false},{label:'B. 您 (nín)',ok:true},{label:'C. 谢谢 (xièxie)',ok:false}
+  ],(b,ok,fid,g)=>exFb(b,ok,fid,g,
+    'Chào thầy cô trang trọng dùng "您" (nín): 王老师，您好！',
+    'Đáp án: B. 您 (nín) — đại từ kính trọng dùng cho thầy/cô.'));
+  // E5
+  mkChips('e5c',[
+    {label:'A. 再见！(Zàijiàn!)',ok:false},{label:'B. 不客气！(Bú kèqi!)',ok:true},{label:'C. 你好！(Nǐ hǎo!)',ok:false}
+  ],(b,ok,fid,g)=>exFb(b,ok,fid,g,
+    'Trích đoạn: 学生们说"谢谢！"小语说"不客气！"',
+    'Đáp án: B. 不客气！ — Tiểu Ngữ đáp lại lời cảm ơn.'));
+  // E6
+  mkChips('e6c',[
+    {label:'A. 老师好！',ok:false},{label:'B. 不客气！',ok:true},{label:'C. 大家好！',ok:false}
+  ],(b,ok,fid,g)=>exFb(b,ok,fid,g,
+    'Đáp lại "谢谢你" = "不客气！" (Không có gì!).',
+    'Đáp án: B. 不客气！ — phản xạ chuẩn cho lời cảm ơn.'));
+  // E4 (sentence ordering)
+  initE4();
+}
+
+/* E4 sentence ordering */
+const E4_SEGS=[['同学们','Tóngxuémen'],[',','，'],['再见','zàijiàn'],['!','！']];
+const E4_CORRECT=['Tóngxuémen','，','zàijiàn','！'];
+let e4pick=[];
+function initE4(){
+  e4pick=[];
+  const tbox=document.getElementById('e4t');
+  tbox.innerHTML='';
+  const shuffled=[1,2,0,3].map(i=>({idx:i,label:E4_SEGS[i][1]}));
+  shuffled.forEach((s,pos)=>{
+    const c=document.createElement('div');c.className='token-chip';c.textContent=s.label;c.dataset.pos=pos;c.dataset.val=s.label;
+    c.onclick=()=>{if(!c.classList.contains('used')){e4pick.push({pos,val:s.label});c.classList.add('used');renderE4();}};
+    tbox.appendChild(c);
+  });
+  renderE4();
+}
+function renderE4(){
+  const z=document.getElementById('e4z');z.innerHTML='';
+  e4pick.forEach((p,i)=>{
+    const s=document.createElement('span');s.className='answer-slot';s.textContent=p.val;
+    s.onclick=()=>{e4pick.splice(i,1);const chips=document.querySelectorAll('#e4t .token-chip');chips[p.pos]?.classList.remove('used');renderE4();};
+    z.appendChild(s);
+  });
+}
+function checkE4(){
+  const fb=document.getElementById('e4f');
+  const user=e4pick.map(p=>p.val).join(' ');
+  const target=E4_CORRECT.join(' ');
+  if(user===target){fb.className='fb ok';fb.innerHTML='✓ 同学们，再见！ (Tóngxuémen, zàijiàn!) — Tạm biệt các bạn học!';playAudio('同学们再见');}
+  else{fb.className='fb bad';fb.innerHTML='✗ Thứ tự đúng: Tóngxuémen ， zàijiàn ！ → 同学们，再见！';}
+}
+function resetE4(){initE4();const fb=document.getElementById('e4f');fb.className='fb';fb.innerHTML='';}
+</script>
+</body>
+</html>
